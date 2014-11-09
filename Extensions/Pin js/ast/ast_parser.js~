@@ -22,7 +22,7 @@ PIN_JS_AST_Parser.prototype.walkTree = function () {
 	this.visitors = new Object();
 
 	function printLoc(start,finish) {
-		console.log(PIN_JS_ORIGINAL_SRC.slice(start,finish));
+		//console.log(PIN_JS_ORIGINAL_SRC.slice(start,finish));
 	};
 	
 	this.visitors['Program'] = function(node) {
@@ -39,7 +39,7 @@ PIN_JS_AST_Parser.prototype.walkTree = function () {
 	};
 
 	this.visitors['Literal'] = function(node) {
-		console.log(node.raw);
+		//console.log(node.raw);
 	};
 
 	acorn.walk.simple(this.ast,this.visitors);
