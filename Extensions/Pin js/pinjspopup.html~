@@ -1,0 +1,10 @@
+<html>
+<head>
+    <script src = pinjspopup.js></script>
+</head>
+<body>
+<p id="isEnable">Enabled?</p>
+<button id="enableButton" type="button" onclick="toggleEnableFunc()">Disable Pin JS</button>
+<p id="error">Error?</p>
+</body>
+</html>

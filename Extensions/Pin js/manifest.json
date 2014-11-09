@@ -1,0 +1,23 @@
+{
+  "name": "Pin.js Extension for Chrome",
+  "version": "1.0",
+  "description": "Pin.js description.",
+  "devtools_page": "pinjs.html",
+  "manifest_version": 2,
+   "content_security_policy": "default-src 'self'  chrome-extension-resource: ; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval';  connect-src *; frame-src *;",
+    
+	"browser_action": {
+          "default_icon": "pin_green.png",
+          "default_title": "Pin.js",  
+	  "default_popup": "pinjspopup.html"     
+        },
+
+"web_accessible_resources":
+    [
+      "*"
+    ],
+"permissions": [
+          "management", "storage"
+        ]
+
+}

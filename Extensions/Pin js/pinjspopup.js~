@@ -1,0 +1,27 @@
+        function toggleEnableFunc()
+		{
+		var color;
+		console.log("before chrome call");
+		try 
+			{
+            		exInfo =  chrome.management.get("mhcdpaolgidgnadelfiooolaiklchphp");
+			console.log("after chrome call");
+			if(exInfo.enabled)
+				{
+				color = "red";
+				document.getElementById("isEnabled").innerHTML = "Atom JS is now disabled";
+				chrome.management.setEnabled(exInfo.id, false);
+				}
+			else
+				{
+				color = "green";
+				document.getElementById("isEnabled").innerHTML = "Atom JS is now enabled";
+				chrome.management.setEnabled(exInfo.id, true);			
+				}
+			chrome.browserAction.setIcon({path:"Atom_" + color + ".png"});
+			}        	
+		catch(err) 
+			{
+    			document.getElementById("error").innerHTML = err.message;
+			}
+		}
