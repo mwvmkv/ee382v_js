@@ -40,3 +40,18 @@ PIN_JS_AST_Parser.prototype.walkTree = function () {
 	acorn.walk.simple(this.ast,this.visitors);
 
 };
+
+PIN_JS_AST_Parser.prototype.walkTreeAndGenerate = function () {
+
+	this.visitors = new Object();
+	
+	this.visitors['Program'] = function(node) {
+
+
+	};
+
+	acorn.walk.simple(this.ast,this.visitors);
+
+};
+
+
