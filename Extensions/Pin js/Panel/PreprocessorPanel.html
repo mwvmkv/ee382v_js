@@ -8,7 +8,35 @@
   <ol class='newspaper js-preprocessed-urls'>
       <li>Reload to preprocess sources</li>
   </ol>
+  
+   <select id="codeselect" name="JSSelect"></select>
+  <p></p>
+  <div id="left" style="float:left;" >
+      Original Code:
+      <p></p>
+      <textarea id="originalcodearea" name="originalcode">
+      This is a very long string designed to test what it looks like when printed
+      on the screen which will hopefully 
+
+      </textarea>
+  </div>
+  <div id="right" style="float:right;">
+      Instrumented Code:
+      <p></p>
+      <textarea id="instcodearea" name="instcode">
+      This is a very long string designed to test what it looks like when printed
+      on the screen which will hopefully
+      </textarea>
+  </div>
+  
+  <script src="codewindow.js"></script>
+  
   <script src="InspectedWindowLoadMonitor.js"></script>
   <script src="PreprocessorPanel.js"></script>
+  <script type="text/javascript" src="acorn.js"></script>
+  <script type="text/javascript" src="escodegen.browser.js"></script>
+  <script type="text/javascript" src="ast_parser.js"></script>
+  <script type="text/javascript" src="walk.js"></script>
+  
 </body>
 </html>

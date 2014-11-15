@@ -20,3 +20,23 @@ ol.newspaper li {
   padding: 5px;
   vertical-align: top;
 }
+#right{
+     width: 50%;
+    height: 500px;   
+}
+
+#left{
+    width: 50%;
+    height: 500px;    
+}
+
+#originalcodearea{
+    width: 95%;
+    height: 500px;
+}
+
+#instcodearea{
+     width: 95%;
+    height: 500px;   
+}
+
