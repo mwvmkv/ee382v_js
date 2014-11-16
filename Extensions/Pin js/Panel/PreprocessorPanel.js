@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 (function() {
-
+    
 // This function is converted to a string and becomes the preprocessor
 function preprocessor(source, url, listenerName) {
   url = url ? url : '(eval)';
@@ -16,7 +16,13 @@ function preprocessor(source, url, listenerName) {
   prefix += 'window.__preprocessedCode.push(' + JSON.stringify(source) +');\n';
   
   var postfix = '\n//# sourceURL=' + url + '.js\n';
+ 
 
+  
+  //var jsParser = new PIN_JS_AST_Parser(source);
+  //jsParser.walkTree();
+  //var preProcessedSource = jsParser.walkTreeAndGenerate();
+  //return prefix + preProcessedSource + postfix;
   return prefix + source + postfix;
 }
 
@@ -27,6 +33,7 @@ function extractPreprocessedFiles(onExtracted) {
       alert('exception');
       throw new Error('Eval failed for ' + expr, isException.value);
     }
+    alert(JSON.stringify(res));
     onExtracted(res);
   }
   chrome.devtools.inspectedWindow.eval(expr, onEval);
@@ -53,6 +60,33 @@ function demoPreprocessor() {
 function listen() {
   var reloadButton = document.querySelector('.reload-button');
   reloadButton.addEventListener('click', demoPreprocessor);
+  var scrollLeft = document.getElementById('originalcodearea');
+  var scrollRight = document.getElementById('instcodearea');
+
+  var jsParser = new PIN_JS_AST_Parser('var x = 1;');
+  
+  scrollLeft.addEventListener("scroll", leftScrollbarSync);
+  scrollRight.addEventListener("scroll", rightScrollbarSync);
+  
+}
+
+function leftScrollbarSync(){
+  var scrollLeft = document.getElementById('originalcodearea');
+  var scrollRight = document.getElementById('instcodearea');
+
+ if(document.getElementById('checklinked').checked)
+    {
+    scrollRight.scrollTop = scrollLeft.scrollTop;
+    }
+}
+
+function rightScrollbarSync(){
+  var scrollLeft = document.getElementById('originalcodearea');
+  var scrollRight = document.getElementById('instcodearea');
+ if(document.getElementById('checklinked').checked)
+    {
+    scrollLeft.scrollTop = scrollRight.scrollTop;
+    }
 }
 
 window.addEventListener('load', listen);
@@ -64,10 +98,6 @@ function createRow(url) {
 }
 
 function updateUI(codeHolder) {
-  alert(JSON.stringify(codeHolder));
-  alert(JSON.stringify(codeHolder[0]));
-  alert(JSON.stringify(codeHolder[1]));
-  alert(JSON.stringify(codeHolder[2]));
 
   funcNames = [];
   originalCode = [];
