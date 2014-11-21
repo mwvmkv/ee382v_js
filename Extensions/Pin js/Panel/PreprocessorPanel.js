@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 (function() {
     
+    
+    
 // This function is converted to a string and becomes the preprocessor
 function preprocessor(source, url, listenerName) {
+    
   url = url ? url : '(eval)';
   url += listenerName ? '_' + listenerName : '';
   
@@ -33,7 +36,7 @@ function extractPreprocessedFiles(onExtracted) {
       alert('exception');
       throw new Error('Eval failed for ' + expr, isException.value);
     }
-    alert(JSON.stringify(res));
+    //alert(JSON.stringify(res));
     onExtracted(res);
   }
   chrome.devtools.inspectedWindow.eval(expr, onEval);
