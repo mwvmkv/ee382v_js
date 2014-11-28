@@ -13,19 +13,53 @@
     }
   </style>
 
-  <script type="text/javascript" src="acorn.js"></script>
   <script type="text/javascript" src="escodegen.browser.js"></script>
-  <script type="text/javascript" src="ast_parser.js"></script>
-  <script type="text/javascript" src="walk.js"></script>
+  <script type="text/javascript" src="esprima.js"></script>
+
 
 
   <script>
     function parse()
     {
-        var code = document.getElementById('code').value
-        var jsParser = new PIN_JS_AST_Parser(code);
-		jsParser.walkTreeAndGenerate();
+        
+    function traverse(node, func) {
+        
+    if(node.hasOwnProperty("type")){func(node);}
+    
+    for (var key in node) { //2
+        if (node.hasOwnProperty(key)) { //3
+            var child = node[key];
+            if (typeof child === 'object' && child !== null) { //4
+
+                if (Array.isArray(child)) {
+                    child.forEach(function(node) { //5
+                        traverse(node, func);
+                    });
+                } else {
+                    traverse(child, func); //6
+                }
+            }
+        }
     }
+}
+
+        var instrumentationCode = "window.__Pin_JS_InstrumentationResults['<rep>']++;";
+        function visitor(node){
+        if(node.type == "FunctionDeclaration")
+            {
+            var insertCode = esprima.parse(instrumentationCode.replace('<rep>', node.id.name));
+            node.body.body = insertCode.body.concat(node.body.body);
+            }
+        }
+        
+        var code = document.getElementById('code').value;
+        var tree = esprima.parse(code, { tolerant: true, loc: true, range: true });
+        console.log(tree);
+       traverse(tree, visitor);
+       console.log(tree);
+
+       console.log(escodegen.generate(tree));
+    }   
   </script>
 </head>
 

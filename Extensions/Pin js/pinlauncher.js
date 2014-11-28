@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 chrome.devtools.panels.create(
-    'Preprocessor',
+    'Code Window',
     null, // No icon path
     'Panel/PreprocessorPanel.html',
     null // no callback needed
 );
 
 chrome.devtools.panels.create(
-    'Pin Code',
+    'Test Window',
     null, // No icon path
     'Panel/codewindow.html',
     null // no callback needed

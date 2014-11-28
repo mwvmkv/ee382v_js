@@ -38,7 +38,13 @@
     // This function should be converted to a string and run in the Web page
     injectedScript: function() {
       // Initialize a secret data structure.
-      window.__Pin_JS_InstrumentationResults = [];
+      window.__Pin_JS_InstrumentationResults = {};
+      window.__Pin_JS_InstrumentationResults['instr1'] = {'key1':1, 'key2':2};
+      window.__Pin_JS_InstrumentationResults['instr2'] = {};
+      window.__Pin_JS_InstrumentationResults['instr2']['sub1'] = {'key3':3, 'key2':4};
+      window.__Pin_JS_InstrumentationResults['instr2']['sub2'] = {'key5':5, 'key6':6};
+      window.__Pin_JS_InstrumentationResults['instr2']['key7'] = 7;
+      window.__Pin_JS_InstrumentationResults['instr2']['key8'] = 8;
       window.__inspectedWindowLoaded = false;
       window.addEventListener('load', function() {
         window.__inspectedWindowLoaded = true;

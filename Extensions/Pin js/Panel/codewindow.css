@@ -4,20 +4,20 @@
 
 #right{
      width: 50%;
-    height: 500px;   
+    height: 80%;   
 }
 
 #left{
     width: 50%;
-    height: 500px;    
+    height: 80%;    
 }
 
-#originalcodearea{
+#instSelect{
     width: 95%;
     height: 500px;
 }
 
-#instcodearea{
+#resultsarea{
      width: 95%;
     height: 500px;   
 }
