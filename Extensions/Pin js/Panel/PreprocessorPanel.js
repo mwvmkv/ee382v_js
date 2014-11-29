@@ -135,6 +135,11 @@ function updateUI(codeHolder) {
         option.text = name;
         optionSelector.add(option);
   });
+  if(originalCode.length > 0)
+      {
+      document.getElementById('originalcodearea').innerHTML = originalCode[0];
+      document.getElementById('instcodearea').innerHTML = processedCode[0];  
+      }
   optionSelector.addEventListener('change', updateCodeAreas);
 }
 

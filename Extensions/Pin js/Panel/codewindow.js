@@ -58,7 +58,6 @@ for(var i = 0; i < instrumentationResultsCurrentKeys.length; i++)
     }
   document.getElementById('heirarchyLabel').innerHTML = "Top";
   resultsDisplay.innerHTML = resultsAreaText;
-  optionSelector.addEventListener('change', updateResultsArea);
   optionSelector.size = optionSelector.options.length;
 }
 
@@ -112,8 +111,6 @@ function updateInstResults(){
             }    
     }
   resultsDisplay.innerHTML = resultsAreaText;
-  //Object.keys(results).forEach(function(key){});
-  optionSelector.addEventListener('change', updateResultsArea);
   optionSelector.size = optionSelector.options.length;
 }
 
