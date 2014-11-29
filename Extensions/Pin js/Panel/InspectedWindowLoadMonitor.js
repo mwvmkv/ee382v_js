@@ -49,6 +49,7 @@
       window.addEventListener('load', function() {
         window.__inspectedWindowLoaded = true;
         console.log('loaded');
+        //pin initialize codee//
       });
     }
   };
