@@ -21,10 +21,10 @@ function listen() {
   loadButton.addEventListener('click', extractInstrumentationResults);
   
   var backButton = document.getElementById('backButton');
-  loadButton.addEventListener('click', back);
+  backButton.addEventListener('click', back);
   
   var forwardButton = document.getElementById('forwardButton');
-  loadButton.addEventListener('click', forward);
+  forwardButton.addEventListener('click', forward);
 }
 
 function createRow(url) {
@@ -35,6 +35,7 @@ function createRow(url) {
 function updateUI(results) {
   instrumetationHeirarchy = [];
   instrumentationResults = results;
+  instrumentationTop = results;
   instrumentationResultsCurrentKeys = Object.keys(results);
   var optionSelector = document.getElementById('instSelect');
   var resultsDisplay = document.getElementById('resultsarea');
@@ -43,8 +44,7 @@ function updateUI(results) {
 
 for(var i = 0; i < instrumentationResultsCurrentKeys.length; i++)
     {
-        if(typeof results[instrumentationResultsCurrentKeys[i]] === 'object' || 
-            typeof results[instrumentationResultsCurrentKeys[i]] === 'array')
+        if(typeof results[instrumentationResultsCurrentKeys[i]] === 'object')
             {
             var option = document.createElement("option");
             option.text = String(instrumentationResultsCurrentKeys[i]);
@@ -56,38 +56,65 @@ for(var i = 0; i < instrumentationResultsCurrentKeys.length; i++)
                 String(results[instrumentationResultsCurrentKeys[i]]);
             }    
     }
+  document.getElementById('heirarchyLabel').innerHTML = "Top";
   resultsDisplay.innerHTML = resultsAreaText;
-  //Object.keys(results).forEach(function(key){});
   optionSelector.addEventListener('change', updateResultsArea);
   optionSelector.size = optionSelector.options.length;
 }
 
 function back (){
-    alert("back clicked");
+
     if(instrumetationHeirarchy.length > 0)
         {
-        instrumentationHeirarchy.pop();
+        instrumetationHeirarchy.pop();
         }
-    
+    updateInstResults();
 }
 
 function forward (select){
-    alert("Change event fired");
     var optionSelector = document.getElementById('instSelect');
     var index = optionSelector.selectedIndex;
     if(index != -1)
         {
         instrumetationHeirarchy.push(instrumentationResultsCurrentKeys[index])
         }
+        updateInstResults();
 }
         
 function updateInstResults(){
-    var hlabel = document.getElementById('heararchyLabel');
+    var hlabel = document.getElementById('heirarchyLabel');
     var newLabel = "Top";
+    var res = instrumentationTop;
     for(var i = 0; i < instrumetationHeirarchy.length; i++)
         {
         newLabel = newLabel+">"+instrumetationHeirarchy[i];
+        res = res[instrumetationHeirarchy[i]];
         }
+   hlabel.innerHTML = newLabel;
+   
+  instrumentationResultsCurrentKeys = Object.keys(res);
+  var optionSelector = document.getElementById('instSelect');
+  var resultsDisplay = document.getElementById('resultsarea');
+  var resultsAreaText = "";
+  while(optionSelector.options.length != 0){optionSelector.options.remove(0);}
+  for(var i = 0; i < instrumentationResultsCurrentKeys.length; i++)
+    {
+        if(typeof res[instrumentationResultsCurrentKeys[i]] === 'object')
+            {
+            var option = document.createElement("option");
+            option.text = String(instrumentationResultsCurrentKeys[i]);
+            optionSelector.add(option);     
+            }
+        else
+            {
+            resultsAreaText = resultsAreaText +'\n'+String(instrumentationResultsCurrentKeys[i])+": "+
+                String(res[instrumentationResultsCurrentKeys[i]]);
+            }    
+    }
+  resultsDisplay.innerHTML = resultsAreaText;
+  //Object.keys(results).forEach(function(key){});
+  optionSelector.addEventListener('change', updateResultsArea);
+  optionSelector.size = optionSelector.options.length;
 }
 
 })();
