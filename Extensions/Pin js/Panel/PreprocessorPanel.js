@@ -58,7 +58,7 @@ var userCode = '\r\n    function traverse(node, func) {\r\n        \r\n    if(no
 var preprocessorString =  '(' + preprocessor + ')';
 preprocessorString = preprocessorString.replace(/\/\/\<insert user code here\>/g, userCode);
 var initPreProcessorString = '(' + injectedScript  + ')()';
-initPreProcessorString = initPreProcessorString.replace(/\/\/pin initialize codee\/\//g,userInitCode);
+initPreProcessorString = initPreProcessorString.replace(/\/\/pin initialize code\/\//g,userInitCode);
   var options = {
     ignoreCache: true,
     userAgent: undefined,
