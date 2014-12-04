@@ -1,10 +1,6 @@
 // AST walker module for Mozilla Parser API compatible trees
 
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") return mod(exports); // CommonJS
-  if (typeof define == "function" && define.amd) return define(["exports"], mod); // AMD
-  mod((this.acorn || (this.acorn = {})).walk = {}); // Plain browser env
-})(function(exports) {
+(function(esprima) {
   "use strict";
 
   // A simple walk is one where you simply specify callbacks to be
@@ -22,8 +18,8 @@
   // The base argument can be used to pass a custom (recursive)
   // walker, and state can be used to give this walked an initial
   // state.
-  exports.simple = function(node, visitors, base, state) {
-    if (!base) base = exports.base;
+  esprima.simple = function(node, visitors, base, state) {
+    if (!base) base = esprima.base;
     function c(node, st, override) {
       var type = override || node.type, found = visitors[type];
       base[type](node, st, c);
@@ -34,8 +30,8 @@
 
   // An ancestor walk builds up an array of ancestor nodes (including
   // the current node) and passes them to the callback as the state parameter.
-  exports.ancestor = function(node, visitors, base, state) {
-    if (!base) base = exports.base;
+  esprima.ancestor = function(node, visitors, base, state) {
+    if (!base) base = esprima.base;
     if (!state) state = [];
     function c(node, st, override) {
       var type = override || node.type, found = visitors[type];
@@ -54,8 +50,8 @@
   // threaded through the walk, and can opt how and whether to walk
   // their child nodes (by calling their third argument on these
   // nodes).
-  exports.recursive = function(node, state, funcs, base) {
-    var visitor = funcs ? exports.make(funcs, base) : base;
+  esprima.recursive = function(node, state, funcs, base) {
+    var visitor = funcs ? esprima.make(funcs, base) : base;
     function c(node, st, override) {
       visitor[override || node.type](node, st, c);
     }
@@ -76,10 +72,10 @@
   // Find a node with a given start, end, and type (all are optional,
   // null can be used as wildcard). Returns a {node, state} object, or
   // undefined when it doesn't find a matching node.
-  exports.findNodeAt = function(node, start, end, test, base, state) {
+  esprima.findNodeAt = function(node, start, end, test, base, state) {
     test = makeTest(test);
     try {
-      if (!base) base = exports.base;
+      if (!base) base = esprima.base;
       var c = function(node, st, override) {
         var type = override || node.type;
         if ((start == null || node.start <= start) &&
@@ -99,10 +95,10 @@
 
   // Find the innermost node of a given type that contains the given
   // position. Interface similar to findNodeAt.
-  exports.findNodeAround = function(node, pos, test, base, state) {
+  esprima.findNodeAround = function(node, pos, test, base, state) {
     test = makeTest(test);
     try {
-      if (!base) base = exports.base;
+      if (!base) base = esprima.base;
       var c = function(node, st, override) {
         var type = override || node.type;
         if (node.start > pos || node.end < pos) return;
@@ -117,10 +113,10 @@
   };
 
   // Find the outermost matching node after a given position.
-  exports.findNodeAfter = function(node, pos, test, base, state) {
+  esprima.findNodeAfter = function(node, pos, test, base, state) {
     test = makeTest(test);
     try {
-      if (!base) base = exports.base;
+      if (!base) base = esprima.base;
       var c = function(node, st, override) {
         if (node.end < pos) return;
         var type = override || node.type;
@@ -135,9 +131,9 @@
   };
 
   // Find the outermost matching node before a given position.
-  exports.findNodeBefore = function(node, pos, test, base, state) {
+  esprima.findNodeBefore = function(node, pos, test, base, state) {
     test = makeTest(test);
-    if (!base) base = exports.base;
+    if (!base) base = esprima.base;
     var max;
     var c = function(node, st, override) {
       if (node.start > pos) return;
@@ -152,8 +148,8 @@
 
   // Used to create a custom walker. Will fill in all missing node
   // type properties with the defaults.
-  exports.make = function(funcs, base) {
-    if (!base) base = exports.base;
+  esprima.make = function(funcs, base) {
+    if (!base) base = esprima.base;
     var visitor = {};
     for (var type in base) visitor[type] = base[type];
     for (var type in funcs) visitor[type] = funcs[type];
@@ -165,7 +161,7 @@
 
   // Node walkers.
 
-  var base = exports.base = {};
+  var base = esprima.base = {};
   base.Program = base.BlockStatement = function(node, st, c) {
     for (var i = 0; i < node.body.length; ++i)
       c(node.body[i], st, "Statement");
@@ -317,7 +313,7 @@
     while (scope.isCatch) scope = scope.prev;
     return scope;
   }
-  exports.scopeVisitor = exports.make({
+  esprima.scopeVisitor = esprima.make({
     Function: function(node, scope, c) {
       var inner = makeScope(scope);
       for (var i = 0; i < node.params.length; ++i)

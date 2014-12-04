@@ -46,10 +46,15 @@
       window.__Pin_JS_InstrumentationResults['instr2']['key7'] = 7;
       window.__Pin_JS_InstrumentationResults['instr2']['key8'] = 8;
       window.__inspectedWindowLoaded = false;
+      // PIN master object
+      PIN = new Object();
+      PIN.stats = {};
+
       window.addEventListener('load', function() {
         window.__inspectedWindowLoaded = true;
         console.log('loaded');
         //pin initialize code//
+        PIN_Initialize();
       });
     }
   };
