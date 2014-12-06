@@ -3,7 +3,7 @@
 // This function is converted to a string and becomes the preprocessor
 
 function extractInstrumentationResults() {
-  var expr = 'window.__Pin_JS_InstrumentationResults';
+  var expr = 'PIN';
   function onEval(res, isException) {
     if (isException){
       alert('exception');
@@ -16,6 +16,10 @@ function extractInstrumentationResults() {
 
 window.addEventListener('load', listen);
 
+function myFunc(x) {
+  alert("Called me!!");
+}
+
 function listen() {
   var loadButton = document.getElementById('loadButton');
   loadButton.addEventListener('click', extractInstrumentationResults);
@@ -25,6 +29,9 @@ function listen() {
   
   var forwardButton = document.getElementById('forwardButton');
   forwardButton.addEventListener('click', forward);
+
+ // alert(JSON.stringify(chrome));
+  //chrome.webNavigation.onBeforeNavigate.addListener(myFunc);
 }
 
 function createRow(url) {
