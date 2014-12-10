@@ -106,9 +106,13 @@ function extractPreprocessedFiles(onExtracted) {
 
 function reloadWithPreprocessor(injectedScript) {
  
-var userInitCode = 'function PIN_Initialize() {\r\nPIN.stats.execFreq = [];\r\nPIN.stats.execFreq[\'hello\'] = 4;\r\nPIN.stats.execFreq[\'world\'] = 5;\r\n};';
+var userInitCode = 'function PIN_Initialize() {\r\nPIN.stats.execFreq = {};\r\nPIN.stats.execFreq[\'hello\'] = 4;\r\nPIN.stats.execFreq[\'world\'] = 5;\r\n};';
 //var userCode = '\r\n    function traverse(node, func) {\r\n        \r\n    if(node.hasOwnProperty(\"type\")){func(node);}\r\n    \r\n    for (var key in node) { \/\/2\r\n        if (node.hasOwnProperty(key)) { \/\/3\r\n            var child = node[key];\r\n            if (typeof child === \'object\' && child !== null) { \/\/4\r\n\r\n                if (Array.isArray(child)) {\r\n                    child.forEach(function(node) { \/\/5\r\n                        traverse(node, func);\r\n                    });\r\n                } else {\r\n                    traverse(child, func); \/\/6\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n       var functionNames = []; \r\n       var instrumentationCode = \"window.__Pin_JS_InstrumentationResults[\'<rep>\']++;\";\r\n        function visitor(node){\r\n        if(node.type == \"FunctionDeclaration\")\r\n            {\r\n            functionNames.push(node.id.name);\r\n            var insertCode = esprima.parse(instrumentationCode.replace(\/\\<rep\\>\/g, node.id.name));\r\n            node.body.body = insertCode.body.concat(node.body.body);\r\n            }\r\n        }\r\n        \r\n       var tree = esprima.parse(source, { tolerant: true, loc: true, range: true });\r\n       traverse(tree, visitor);\r\n       var preprocessedSource = escodegen.generate(tree);\r\n    ';
-var userCode = 'function PIN_InstrumentFunction(PIN_Params) {\r\nalert(\"Lets see if this works\");\r\n}';
+
+
+
+//var userCode = 'function PIN_InstrumentFunction(PIN_Params){PIN.stats.execFreq[PIN_Params.FUNC_NAME] = PIN.stats.execFreq[PIN_Params.FUNC_NAME] || 1;};';
+var userCode = 'function PIN_InstrumentFunction(PIN_Params){};';
 var preprocessorString =  '(' + preprocessor + ')';
 preprocessorString = preprocessorString.replace(/\/\/\<insert user code here\>/g, userCode);
 var initPreProcessorString = '(' + injectedScript  + ')()';

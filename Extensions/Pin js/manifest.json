@@ -11,13 +11,17 @@
           "default_title": "Pin.js",  
 	  "default_popup": "pinjspopup.html"     
         },
+"background":{
+    "persistent":false,
+    "scripts":["pinjsonbackground.js"]
+},
 
 "web_accessible_resources":
     [
       "*"
     ],
 "permissions": [
-          "webNavigation","management", "storage"
+          "webNavigation","management", "storage", "tabs", "activeTab", "nativeMessaging"
         ]
 
 }
