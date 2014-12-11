@@ -14,22 +14,13 @@ function preprocessor(source, url, listenerName) {
     // End Minified Code
 
    var preprocessedSource = source;
-   var functionNames = [];
+   //var functionNames = [];
 
- 
-  url = url ? url : '(eval)';
-  url += listenerName ? '_' + listenerName : '';
-  
-  var prefix = 'window.__preprocessed = window.__preprocessed || [];\n';
-  prefix += 'window.__interceptedCode = window.__interceptedCode || [];\n';
-  prefix += 'window.__preprocessedCode = window.__preprocessedCode || [];\n';
-  prefix += 'window.__preprocessed.push(\'' + url +'\');\n';
-  prefix += 'window.__interceptedCode.push(' + JSON.stringify(source) +');\n';
-  prefix += 'window.__preprocessedCode.push(' + JSON.stringify(preprocessedSource) +');\n';
-  
-  functionNames.forEach(function(name) {
-     prefix += "window.__Pin_JS_InstrumentationResults['"+name+"'] = 0;";
-  });
+  var prefix = '';
+
+  //functionNames.forEach(function(name) {
+   //  prefix += "window.__Pin_JS_InstrumentationResults['"+name+"'] = 0;";
+  //});
   
   var postfix = '\n//# sourceURL=' + url + '\n';
 
@@ -58,13 +49,64 @@ function preprocessor(source, url, listenerName) {
 	    }
 	}
 
-	function PIN_AddAnalaysisToFunction() {
+
+	definedAnalysisFunctions = new Object();
+	
+
+	function PIN_AddAnalaysisToFunction(PIN_Global_Params,PIN_Analysis_Function) {
+		//alert(PIN_Analysis_Function);
+		//alert(JSON.stringify(esprima.parse(PIN_Analysis_Function)));
+		
+
+		__analysisFunctionName = esprima.parse(PIN_Analysis_Function).body[0].id.name;
+
+		alert("Comparing "  +  PIN_Global_Params.FUNC_NAME + " to " + __analysisFunctionName);
+		if(PIN_Global_Params.FUNC_NAME == __analysisFunctionName){ alert("Names match"); return;}
+
+		if (!__analysisFunctionName.hasOwnProperty(__analysisFunctionName)) {
+			alert("in if of !__analysisFunctionName");
+			definedAnalysisFunctions[definedAnalysisFunctions] = JSON.stringify(PIN_Analysis_Function);
+			//prefix += JSON.stringify(PIN_Analysis_Function) + "\n";
+		}
+
+		__analysisFunctionName += "();"
+		//alert(__analysisFunctionName);
+		
+		//parsed_user_function = esprima.parse('alert("Hello Mike");');
+		parsed_user_function = esprima.parse(__analysisFunctionName);
+		//alert(JSON.stringify(parsed_user_function));
+
+		//alert(JSON.stringify(esprima.parse(PIN_Analysis_Function)));
+		//alert(JSON.stringify(parsed_user_function.body));
+		//PIN_Global_Params.node_handle.body.body.unshift(parsed_user_function.program.body[0]);
+		//alert(JSON.stringify(parsed_user_function));
+		if (PIN_Global_Params.node_handle.body.type == "BlockStatement") {
+			//alert("It is a BlockStatement");
+			if (PIN_Global_Params.node_handle.body.body != "undefined") {
+				//alert(JSON.stringify(PIN_Global_Params.node_handle.body.body));
+
+				//PIN_Global_Params.node_handle.body.body.unshift(parsed_user_function.body[0]);
+				parsed_user_function = esprima.parse(PIN_Analysis_Function).body[0].body.body;
+
+				for (var i = 0; i < parsed_user_function.length; i++) {
+
+					PIN_Global_Params.node_handle.body.body.unshift(parsed_user_function[i]);
+				}
 
 
+			}
+			//PIN_Global_Params.node_handle.body.body.unshift(parsed_user_function.program.body[0]);
+		} else {
+			//alert("It is not a BlockStatement");
+		}
+		//alert(JSON.stringify(PIN_Global_Params.node_handle));
 	}
 
   // Replacement code for PIN
   //<insert user code here>
+
+  // Helper code
+  PIN_Global_Params = new Object();
 
   // Convert to tree
   var programTree = esprima.parse(source);
@@ -74,8 +116,11 @@ function preprocessor(source, url, listenerName) {
 
   	function __internalPin_InstrumentFunction(node) {
   		if (node.type == "FunctionDeclaration") {
+  			PIN_Global_Params = new Object();
+  			PIN_Global_Params.node_handle = node;
   			function_params = new Object();
   			function_params.FUNC_NAME = node.id.name;
+  			PIN_Global_Params.FUNC_NAME = node.id.name;
   			function_params.FUNC_NUM_ARGS = node.params.length;
   			PIN_InstrumentFunction(function_params);
   		}
@@ -87,6 +132,21 @@ function preprocessor(source, url, listenerName) {
 
   // Generate new code
   preprocessedSource = escodegen.generate(programTree);
+
+  //alert(preprocessedSource);
+
+
+  url = url ? url : '(eval)';
+  url += listenerName ? '_' + listenerName : '';
+  
+  prefix += 'window.__preprocessed = window.__preprocessed || [];\n';
+  prefix += 'window.__interceptedCode = window.__interceptedCode || [];\n';
+  prefix += 'window.__preprocessedCode = window.__preprocessedCode || [];\n';
+  prefix += 'window.__preprocessed.push(\'' + url +'\');\n';
+  prefix += 'window.__interceptedCode.push(' + JSON.stringify(source) +');\n';
+  prefix += 'window.__preprocessedCode.push(' + JSON.stringify(preprocessedSource) +');\n';
+
+   //alert(JSON.stringify(prefix));
 
   return prefix + preprocessedSource + postfix;
 }
@@ -106,17 +166,21 @@ function extractPreprocessedFiles(onExtracted) {
 
 function reloadWithPreprocessor(injectedScript) {
  
-var userInitCode = 'function PIN_Initialize() {\r\nPIN.stats.execFreq = {};\r\nPIN.stats.execFreq[\'hello\'] = 4;\r\nPIN.stats.execFreq[\'world\'] = 5;\r\n};';
+//var userInitCode = 'function PIN_Initialize() {\r\nPIN.stats.execFreq = [];\r\nPIN.stats.execFreq[\'hello\'] = 4;\r\nPIN.stats.execFreq[\'world\'] = 5;\r\n};';
+var userInitCode = '      console.log("before whats up dec");\r\nfunction whatsUp() {\r\n               console.log("We meet again!");\r\n      }\r\n\r\nfunction PIN_Initialize() {\r\n\r\n\r\n\r\n};\r\nwhatsUp();\r\nconsole.log("pin init done");';
 //var userCode = '\r\n    function traverse(node, func) {\r\n        \r\n    if(node.hasOwnProperty(\"type\")){func(node);}\r\n    \r\n    for (var key in node) { \/\/2\r\n        if (node.hasOwnProperty(key)) { \/\/3\r\n            var child = node[key];\r\n            if (typeof child === \'object\' && child !== null) { \/\/4\r\n\r\n                if (Array.isArray(child)) {\r\n                    child.forEach(function(node) { \/\/5\r\n                        traverse(node, func);\r\n                    });\r\n                } else {\r\n                    traverse(child, func); \/\/6\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n       var functionNames = []; \r\n       var instrumentationCode = \"window.__Pin_JS_InstrumentationResults[\'<rep>\']++;\";\r\n        function visitor(node){\r\n        if(node.type == \"FunctionDeclaration\")\r\n            {\r\n            functionNames.push(node.id.name);\r\n            var insertCode = esprima.parse(instrumentationCode.replace(\/\\<rep\\>\/g, node.id.name));\r\n            node.body.body = insertCode.body.concat(node.body.body);\r\n            }\r\n        }\r\n        \r\n       var tree = esprima.parse(source, { tolerant: true, loc: true, range: true });\r\n       traverse(tree, visitor);\r\n       var preprocessedSource = escodegen.generate(tree);\r\n    ';
+//var userCode = 'function PIN_InstrumentFunction(PIN_Params) {\r\nalert(\"Lets see if this works\");\r\n}';
+var userCode = 'function PIN_InstrumentFunction(PIN_Params) {\r\n        \r\n           function whatsUp() {\r\n              alert(\"They keep calling me!!!\");\r\n           }\r\n          PIN_AddAnalaysisToFunction(PIN_Global_Params,whatsUp);\r\n}';
 
+alert(userCode);
 
-
-//var userCode = 'function PIN_InstrumentFunction(PIN_Params){PIN.stats.execFreq[PIN_Params.FUNC_NAME] = PIN.stats.execFreq[PIN_Params.FUNC_NAME] || 1;};';
-var userCode = 'function PIN_InstrumentFunction(PIN_Params){};';
 var preprocessorString =  '(' + preprocessor + ')';
 preprocessorString = preprocessorString.replace(/\/\/\<insert user code here\>/g, userCode);
 var initPreProcessorString = '(' + injectedScript  + ')()';
 initPreProcessorString = initPreProcessorString.replace(/\/\/pin initialize code\/\//g,userInitCode);
+
+alert(initPreProcessorString);
+alert(preprocessorString);
   //alert(initPreProcessorString);
   var options = {
     ignoreCache: true,
