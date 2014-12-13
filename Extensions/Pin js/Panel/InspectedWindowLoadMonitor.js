@@ -49,6 +49,7 @@
       // PIN master object
       PIN = new Object();
       PIN.stats = {};
+      PIN.stats.execFreq = {};
 
       window.addEventListener('load', function() {
         window.__inspectedWindowLoaded = true;
