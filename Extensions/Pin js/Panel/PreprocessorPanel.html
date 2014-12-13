@@ -3,12 +3,20 @@
   <link rel='stylesheet' href='PreprocessorPanel.css'>
 </head>
 <body>
+
+  <div id="upperleft" style="float:left;">
   <button class='reload-button'>Reload</button>
   <h2 class='newspaper' align="bottom">JavaScript files seen by devtools preprocessor. </h2>
   
    <select id="codeselect" name="JSSelect"></select>
    Link Code Scrollbars:<input type="checkbox" id="checklinked" name="ScrollLink">
   <p></p>
+  </div>
+
+  <div id="upperright" style="float:left;">
+    Pin Instrumentation Code:
+  <textarea id="pintoolcode" style="overflow:auto"></textarea>
+ </div>
   <div id="left" style="float:left;" >
       Original Code:
       <p></p>
