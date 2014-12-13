@@ -75,14 +75,14 @@ function preprocessor(source, url, listenerName) {
 		return;
 		*/
 
-		addedStuff = 'PIN_FUNC_NAME  = "' + PIN_Global_Params.FUNC_NAME +  '";' ;
+		addedStuff = 'window.PIN_FUNC_NAME  = "' + PIN_Global_Params.FUNC_NAME +  '";' ;
 		addedStuff = esprima.parse(addedStuff);
 
 		parsed_user_function = esprima.parse(PIN_Analysis_Function);
 		user_func_name = "window." + parsed_user_function.body[0].id.name;
 		parsed_user_function.body[0].id.name = user_func_name;
 		holder = escodegen.generate(parsed_user_function);
-		alert(JSON.stringify(holder));
+		//alert(JSON.stringify(holder));
 		
 		callString = user_func_name + "();";
 		callCode = esprima.parse(callString);
@@ -104,13 +104,13 @@ function preprocessor(source, url, listenerName) {
 			prefix +=  preprefix+"\n";
 			definedAnalysisFunctions[user_func_name] = true;
 		}
-		alert("here");
+		//alert("here");
 		return;
 
 		//alert(PIN_Analysis_Function);
 		//alert(JSON.stringify(esprima.parse(PIN_Analysis_Function)));
 		
-		alert(esprima.parse(JSON.stringify(PIN_Analysis_Function)));
+		//alert(esprima.parse(JSON.stringify(PIN_Analysis_Function)));
 		__analysisFunctionName = esprima.parse(PIN_Analysis_Function).body[0].id.name;
 
 
@@ -173,12 +173,18 @@ function preprocessor(source, url, listenerName) {
   if (typeof PIN_InstrumentFunction == typeof(Function)) {
 
   	function __internalPin_InstrumentFunction(node) {
-  		if (node.type == "FunctionDeclaration") {
+  		if (node.type == "FunctionDeclaration" || node.type == 'FunctionExpression') {
   			PIN_Global_Params = new Object();
   			PIN_Global_Params.node_handle = node;
   			function_params = new Object();
-  			function_params.FUNC_NAME = node.id.name;
-  			PIN_Global_Params.FUNC_NAME = node.id.name;
+  			if (node.type == "FunctionExpression") {
+     			function_params.FUNC_NAME = "anonymous";
+  				PIN_Global_Params.FUNC_NAME = "anonymous"; 				
+  			} else {
+   				function_params.FUNC_NAME = node.id.name;
+  				PIN_Global_Params.FUNC_NAME = node.id.name; 				
+  			}
+
   			function_params.FUNC_NUM_ARGS = node.params.length;
   			PIN_InstrumentFunction(function_params);
   		}
@@ -205,6 +211,9 @@ function preprocessor(source, url, listenerName) {
   		*/
 
   //prefix += 'window.whatsUp = window.whatsUp || function(){console.log("whats up");};';
+  prefix += 'window.PIN = window.PIN || {};\n' 
+  prefix += 'window.PIN.stats = window.PIN.stats || {};\n'
+  prefix += 'window.PIN.stats.execFreq = window.PIN.stats.execFreq || {};\n';
   prefix += 'window.__preprocessed = window.__preprocessed || [];\n';
   prefix += 'window.__interceptedCode = window.__interceptedCode || [];\n';
   prefix += 'window.__preprocessedCode = window.__preprocessedCode || [];\n';
